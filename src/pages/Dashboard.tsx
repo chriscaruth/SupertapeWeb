@@ -1,6 +1,11 @@
+import { PageHeader } from "../components/layout/PageHeader"
 
 export const Dashboard = () => {
     return (
-        <h1 className="text-3xl">Dashboard</h1>
+        <PageHeader>
+            <div>
+                <h1 className="text-2xl font-bold">Dashboard</h1>
+            </div>
+        </PageHeader>
     );
 }

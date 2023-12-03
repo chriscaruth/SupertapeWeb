@@ -2,12 +2,12 @@ import { NavLink } from "react-router-dom";
 import { RouteName, path } from "../../routing/router";
 import { ReactNode } from "react";
 
-interface IPageLink {
+interface ISidebarLink {
     route: RouteName;
     icon: ReactNode
 }
 
-export const PageLink = ({ route, icon } : IPageLink) => {
+export const SidebarLink = ({ route, icon } : ISidebarLink) => {
     return (
         <NavLink
             to={path(route)}

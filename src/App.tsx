@@ -4,8 +4,12 @@ import { NextUIProvider } from "@nextui-org/react";
 import { RouterProvider } from "react-router-dom";
 import { router } from './routing/router';
 import './main.css';
+import { QueryClient, QueryClientProvider } from "react-query";
+import ServiceProvider from "./context/ServiceContext";
 
-export const App = () => {    
+const queryClient = new QueryClient();
+
+export const App = () => {
     return (
         <Auth0Provider
             domain={import.meta.env.VITE_AUTH0_DOMAIN}
@@ -15,9 +19,13 @@ export const App = () => {
                 audience: import.meta.env.VITE_AUTH0_AUDIENCE
             }}
         >
-            <NextUIProvider>
-                <RouterProvider router={router} />
-            </NextUIProvider>
+            <QueryClientProvider client={queryClient}>
+                <ServiceProvider>
+                    <NextUIProvider>
+                        <RouterProvider router={router} />
+                    </NextUIProvider>
+                </ServiceProvider>
+            </QueryClientProvider>
         </Auth0Provider>
     );
 };
