@@ -13,13 +13,11 @@ import {
     DropdownMenu,
     DropdownItem,
     Chip,
-    User,
     Pagination,
     Selection,
     ChipProps,
     SortDescriptor
 } from "@nextui-org/react";
-import { statusOptions } from "./data";
 import { capitalize } from "../../utilities/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +31,11 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 };
 
 const INITIAL_VISIBLE_COLUMNS = ["streetAddress", "unit", "city", "state", "city", "zipCode", "status", "assetType"];
+
+const statusOptions = [
+    {name: "Occupied", uid: "Occupied"},
+    {name: "Vacant", uid: "Vacant"}
+  ];
 
 export const SearchableTable = () => {
     const { assetService } = useServices();
@@ -51,9 +54,6 @@ export const SearchableTable = () => {
     const columns = [
         { name: "Street Address", uid: "streetAddress", sortable: true },
         { name: "Unit", uid: "unit" },
-        { name: "City", uid: "city" },
-        { name: "State", uid: "state" },
-        { name: "Zipcode", uid: "zipCode" },
         { name: "Status", uid: "status" },
         { name: "Type", uid: "assetType" }
     ];
@@ -77,8 +77,8 @@ export const SearchableTable = () => {
             );
         }
         if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-            filteredItems = filteredItems.filter((user) =>
-                Array.from(statusFilter).includes(user.status),
+            filteredItems = filteredItems.filter((asset) =>
+                Array.from(statusFilter).includes(asset.status),
             );
         }
 
@@ -104,23 +104,11 @@ export const SearchableTable = () => {
         switch (columnKey) {
             case "streetAddress":
                 return (
-                    <p>{asset.streetAddress}</p>
+                    <p>{asset.streetAddress} {asset.city}, {asset.state} {asset.zipCode}</p>
                 );
             case "unit":
                 return (
                     <p>{asset.unit}</p>
-                );
-            case "city":
-                return (
-                    <p>{asset.city}</p>
-                );
-            case "state":
-                return (
-                    <p>{asset.state}</p>
-                );
-            case "zipCode":
-                return (
-                    <p>{asset.zipCode}</p>
                 );
             case "status":
                 return (
@@ -325,7 +313,7 @@ export const SearchableTable = () => {
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No users found"} items={sortedItems}>
+            <TableBody emptyContent={"No assets found"} items={sortedItems}>
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
