@@ -23,8 +23,8 @@ export const useAssetService = (): IAssetService => {
         enabled: !!assetId
     });
 
-    const addAssetMutation = useMutation<Asset, unknown, Asset, unknown>(async (newAsset) => {
-        const response = await httpClient.post('/assets', newAsset);
+    const addAssetMutation = useMutation<Asset, unknown, Asset, unknown>(async (asset) => {
+        const response = await httpClient.post('/assets', asset);
         return response.data;
     });
 

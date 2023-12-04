@@ -25,6 +25,7 @@ import { useServices } from "../../context/ServiceContext";
 import { Asset } from "../../models/Asset";
 import { useNavigate } from "react-router-dom";
 import { RouteName, path } from "../../routing/router";
+import { AddAssetButton } from "../assets/AddAssetButton";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
     active: "success",
@@ -35,9 +36,9 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 const INITIAL_VISIBLE_COLUMNS = ["streetAddress", "unit", "city", "state", "city", "zipCode", "status", "assetType"];
 
 const statusOptions = [
-    {name: "Occupied", uid: "Occupied"},
-    {name: "Vacant", uid: "Vacant"}
-  ];
+    { name: "Occupied", uid: "Occupied" },
+    { name: "Vacant", uid: "Vacant" }
+];
 
 export const SearchableTable = () => {
     const { assetService } = useServices();
@@ -228,9 +229,7 @@ export const SearchableTable = () => {
                                 ))}
                             </DropdownMenu>
                         </Dropdown>
-                        <Button color="primary" endContent={<FontAwesomeIcon icon={faPlus} />}>
-                            Add New
-                        </Button>
+                        <AddAssetButton />
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -304,7 +303,7 @@ export const SearchableTable = () => {
             topContentPlacement="outside"
             onSelectionChange={setSelectedKeys}
             onSortChange={setSortDescriptor}
-            onRowAction={(key) => navigate(path(RouteName.AssetsEdit, { assetId: key}))}
+            onRowAction={(key) => navigate(path(RouteName.AssetsEdit, { assetId: key }))}
         >
             <TableHeader columns={headerColumns}>
                 {(column) => (

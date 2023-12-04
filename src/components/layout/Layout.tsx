@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
+import { ToastContainer, useToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Layout = () => {
     return (
@@ -8,6 +10,7 @@ const Layout = () => {
             <div className="flex-1 ml-80 overflow-auto">
                 <Outlet />
             </div>
+            <ToastContainer position="bottom-center" newestOnTop />
         </div>
     );
 };
