@@ -23,6 +23,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useServices } from "../../context/ServiceContext";
 import { Asset } from "../../models/Asset";
+import { useNavigate } from "react-router-dom";
+import { RouteName, path } from "../../routing/router";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
     active: "success",
@@ -40,6 +42,7 @@ const statusOptions = [
 export const SearchableTable = () => {
     const { assetService } = useServices();
     const { data, isLoading, error } = assetService.getAssetsQuery;
+    const navigate = useNavigate();
 
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
@@ -301,6 +304,7 @@ export const SearchableTable = () => {
             topContentPlacement="outside"
             onSelectionChange={setSelectedKeys}
             onSortChange={setSortDescriptor}
+            onRowAction={(key) => navigate(path(RouteName.AssetsEdit, { assetId: key}))}
         >
             <TableHeader columns={headerColumns}>
                 {(column) => (
@@ -315,7 +319,7 @@ export const SearchableTable = () => {
             </TableHeader>
             <TableBody emptyContent={"No assets found"} items={sortedItems}>
                 {(item) => (
-                    <TableRow key={item.id}>
+                    <TableRow className="cursor-pointer" key={item.id}>
                         {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                     </TableRow>
                 )}

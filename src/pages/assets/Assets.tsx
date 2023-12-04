@@ -1,7 +1,7 @@
-import { PageHeader } from "../components/layout/PageHeader";
-import { SearchableTable } from "../components/entities/SearchableTable";
-import { PageContent } from "../components/layout/PageContent";
-import { useServices } from "../context/ServiceContext";
+import { PageHeader } from "../../components/layout/PageHeader";
+import { SearchableTable } from "../../components/entities/SearchableTable";
+import { PageContent } from "../../components/layout/PageContent";
+import { useServices } from "../../context/ServiceContext";
 
 export const Assets = () => {
     return (
