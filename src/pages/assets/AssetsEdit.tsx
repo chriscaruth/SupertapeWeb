@@ -7,6 +7,7 @@ import { Canvas, Object3DNode, extend } from "@react-three/fiber";
 import { Grid, OrbitControls, PivotControls } from "@react-three/drei";
 import { CameraController } from "./3D/CameraController";
 import { Panel } from "./3D/Panel";
+import { ScopesList } from "../../components/scopes/ScopesList";
 
 // Make LumaSplatsThree available to R3F
 extend({ LumaSplats: LumaSplatsThree });
@@ -20,8 +21,14 @@ declare module "@react-three/fiber" {
 
 export const AssetsEdit = () => {
   const { assetId } = useParams();
-  const { assetService } = useServices();
-  const { data } = assetService.getAssetByIdQuery(assetId || "");
+
+  if (!assetId) {
+    return;
+  }
+
+  const { assetService, scopeService } = useServices();
+  const { data: asset } = assetService.getAssetByIdQuery(assetId);
+  const { data: scopes } = scopeService.getScopesByAssetId(assetId);
 
   const gridConfig = {
     gridSize: [10.5, 10.5],
@@ -42,16 +49,18 @@ export const AssetsEdit = () => {
       <PageHeader>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">
-            {data?.streetAddress} {data?.city}, {data?.state} {data?.zipCode}
+            {asset?.streetAddress} {asset?.city}, {asset?.state}{" "}
+            {asset?.zipCode}
           </h1>
         </div>
       </PageHeader>
       <PageContent className="flex-grow overflow-auto">
         <div className="flex flex-row h-full">
-          <div className="w-1/2 p-8 overflow-hidden">
+          <div className="w-1/2 p-4 overflow-auto">
             <div>Display and edit asset</div>
             <div>Create New Scope</div>
-            <div>{data?.id}</div>
+            <div>{asset?.id}</div>
+            <ScopesList scopes={scopes} />
           </div>
           <div className="w-1/2">
             <Canvas
@@ -74,7 +83,7 @@ export const AssetsEdit = () => {
                   LumaSplatsSemantics.FOREGROUND |
                   LumaSplatsSemantics.BACKGROUND
                 }
-                source="https://lumalabs.ai/capture/e9e0e0e9-e470-4a08-8723-120769be360b"
+                source={asset?.assetMapURL}
                 position={[0, 0, 0]}
                 scale={0.5}
                 rotation={[0, Math.PI, 0]}
