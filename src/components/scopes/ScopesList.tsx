@@ -5,12 +5,15 @@ import { CheckCircleIcon, CalendarDaysIcon } from "@heroicons/react/24/outline";
 import { ScopeStatus } from "../../models/enums/ScopeStatus";
 import clsx from "clsx";
 import { formatDate } from "../../utilities/utils";
+import { useAsset3D } from "../../context/Asset3DContext";
 
 export interface ScopeListProps {
   scopes: Scope[] | undefined;
 }
 
 export const ScopesList = ({ scopes }: ScopeListProps) => {
+  const { setSelectedScope } = useAsset3D();
+
   const itemClasses = {
     base: "py-0 w-full",
     title: "font-normal text-medium",
@@ -55,7 +58,6 @@ export const ScopesList = ({ scopes }: ScopeListProps) => {
           showDivider={false}
           className="flex flex-col gap-1 w-full px-0"
           itemClasses={itemClasses}
-          defaultExpandedKeys={[scopes[0].id]}
         >
           {scopes?.map((scope) => (
             <AccordionItem
@@ -63,6 +65,7 @@ export const ScopesList = ({ scopes }: ScopeListProps) => {
               title={scope.scopeType}
               subtitle={scopeSubtitle(scope)}
               startContent={scopeStatusStartIcon(scope.status)}
+              onPress={() => setSelectedScope(scope)}
             >
               <ScopeCard key={scope.id} scope={scope} />
             </AccordionItem>

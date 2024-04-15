@@ -12,7 +12,7 @@ export const Panel = ({
 }: PanelProps) => {
   return (
     <mesh position={position}>
-      <planeGeometry attach="geometry" args={[0.2, 0.2]} />
+      <planeGeometry attach="geometry" args={[0.4, 0.1]} />
       <meshBasicMaterial attach="material" transparent={true} />
       <Text
         position={[0, 0, 0.001]}

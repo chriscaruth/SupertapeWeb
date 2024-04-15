@@ -1,4 +1,5 @@
 import { Scope } from "../../models/Scope";
+import { ScopeItemsList } from "./ScopeItemsList";
 
 interface ScopeProps {
   scope: Scope;
@@ -7,89 +8,7 @@ interface ScopeProps {
 export const ScopeCard = ({ scope }: ScopeProps) => {
   return (
     <div>
-      <div>{scope.id}</div>
-      <div>
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top. This is a long text so we can test fixing the scope to
-        the top. This is a long text so we can test fixing the scope to the top.
-        This is a long text so we can test fixing the scope to the top. This is
-        a long text so we can test fixing the scope to the top. This is a long
-        text so we can test fixing the scope to the top. This is a long text so
-        we can test fixing the scope to the top. This is a long text so we can
-        test fixing the scope to the top. This is a long text so we can test
-        fixing the scope to the top. This is a long text so we can test fixing
-        the scope to the top. This is a long text so we can test fixing the
-        scope to the top.{" "}
-      </div>
+      <ScopeItemsList scopeItems={scope.scopeItems} />
     </div>
   );
 };
