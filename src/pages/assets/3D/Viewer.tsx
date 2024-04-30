@@ -1,10 +1,11 @@
 import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
 import { Canvas, Object3DNode, extend } from "@react-three/fiber";
-import { Grid, OrbitControls, PivotControls } from "@react-three/drei";
+import { Grid } from "@react-three/drei";
 import { CameraController } from "./CameraController";
 import { Panel } from "./Panel";
 import { useAsset3D } from "../../../context/Asset3DContext";
-import { Vector3 } from "three";
+import { Vector3, AxesHelper, Euler } from "three";
+import { calculatePositionInFront } from "../../../utilities/utils";
 
 // Make LumaSplatsThree available to R3F
 extend({ LumaSplats: LumaSplatsThree });
@@ -44,6 +45,7 @@ export const Viewer = ({ assetUrl }: ViewerProps) => {
       shadows
       camera={{ position: [0, 0, 0.5], rotation: [0, 0, 0], fov: 60 }}
     >
+      <primitive object={new AxesHelper(5)} />
       <Grid
         position={[0, -1, 0]}
         args={[10.5, 10.5]}
@@ -52,19 +54,41 @@ export const Viewer = ({ assetUrl }: ViewerProps) => {
       />
 
       {selectedScope &&
-        selectedScope.scopeItems.map((scopeItem) => (
-          <Panel
-            key={scopeItem.id}
-            position={
-              new Vector3(
-                scopeItem.cameraEntity?.posX ?? 0,
-                scopeItem.cameraEntity?.posY ?? 0,
-                scopeItem.cameraEntity?.posZ ?? 0
-              )
-            }
-            text={scopeItem.summary}
-          />
-        ))}
+        selectedScope.scopeItems.map((scopeItem) => {
+          const position = new Vector3(
+            scopeItem.cameraEntity?.posX ?? 0,
+            scopeItem.cameraEntity?.posY ?? 0,
+            scopeItem.cameraEntity?.posZ ?? 0
+          );
+
+          const rotation = new Euler(
+            scopeItem.cameraEntity?.rotX ?? 0,
+            scopeItem.cameraEntity?.rotY ?? 0,
+            scopeItem.cameraEntity?.rotZ ?? 0,
+            "YXZ"
+          );
+
+          const markerPosition = calculatePositionInFront(
+            position,
+            rotation,
+            scopeItem.cameraEntity?.distanceToPointOfInterest ?? 0.5
+          );
+
+          return (
+            <>
+              <Panel
+                key={scopeItem.id}
+                position={position}
+                rotation={rotation}
+                text={scopeItem.summary}
+              />
+              <mesh position={markerPosition}>
+                <sphereGeometry args={[0.01, 24, 24]} />
+                <meshBasicMaterial color={"blue"} />
+              </mesh>
+            </>
+          );
+        })}
 
       <CameraController />
 

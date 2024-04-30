@@ -6,20 +6,22 @@ import {
   useReducer,
 } from "react";
 import { Scope } from "../models/Scope";
-import { Vector3 } from "three";
+import { Euler, Quaternion, Vector3 } from "three";
+import { ScopeItem } from "../models/ScopeItem";
 
 enum Asset3DActionType {
   SetScopeItems = "SET_SCOPE_ITEMS",
   FocusOnScopeItem = "FOCUS_ON_SCOPE_ITEM",
-  SetCameraPosition = "SET_CAMERA_POSITION",
+  SetCameraTransform = "SET_CAMERA_TRANSFORM",
   SetSelectedScope = "SET_SELECTED_SCOPE",
 }
 
 interface Asset3DState {
   scopes: Scope[];
   selectedScope: Scope | null;
-  focusedScopeItem: Scope | null;
+  focusedScopeItem: ScopeItem | null;
   cameraPosition: Vector3;
+  cameraRotation: Quaternion;
 }
 
 interface SetScopeItemsAction {
@@ -34,25 +36,29 @@ interface SetSelectedScopeAction {
 
 interface FocusOnScopeItemAction {
   type: Asset3DActionType.FocusOnScopeItem;
-  payload: Scope;
+  payload: ScopeItem | null;
 }
 
-interface SetCameraPositionAction {
-  type: Asset3DActionType.SetCameraPosition;
-  payload: Vector3;
+interface SetCameraTransformAction {
+  type: Asset3DActionType.SetCameraTransform;
+  payload: {
+    position: Vector3;
+    rotation: Quaternion;
+  };
 }
 
 type Asset3DAction =
   | SetScopeItemsAction
   | FocusOnScopeItemAction
-  | SetCameraPositionAction
+  | SetCameraTransformAction
   | SetSelectedScopeAction;
 
 interface IAsset3DContext {
   state: Asset3DState;
   setScopeItems: (items: Scope[]) => void;
-  setCameraPosition: (position: Vector3) => void;
+  setCameraTransform: (position: Vector3, rotation: Quaternion) => void;
   setSelectedScope: (scope: Scope) => void;
+  setFocusedScopeItem: (scopeItem: ScopeItem | null) => void;
 }
 
 interface IAsset3DProvider {
@@ -66,12 +72,15 @@ export const useAsset3D = () => useContext(Asset3DContext);
 const asset3DReducer = (state: Asset3DState, action: Asset3DAction) => {
   switch (action.type) {
     case Asset3DActionType.SetScopeItems:
-      console.log("Setting scope items");
       return { ...state, scopes: action.payload };
     case Asset3DActionType.FocusOnScopeItem:
       return { ...state, focusedScopeItem: action.payload };
-    case Asset3DActionType.SetCameraPosition:
-      return { ...state, cameraPosition: action.payload };
+    case Asset3DActionType.SetCameraTransform:
+      return {
+        ...state,
+        cameraPosition: action.payload.position,
+        cameraRotation: action.payload.rotation,
+      };
     case Asset3DActionType.SetSelectedScope:
       return { ...state, selectedScope: action.payload };
     default:
@@ -85,12 +94,31 @@ export const Asset3DProvider = ({ children }: IAsset3DProvider) => {
     focusedScopeItem: null,
     selectedScope: null,
     cameraPosition: new Vector3(0, 0, 0),
+    cameraRotation: new Quaternion(),
   });
 
   useEffect(() => {
+    if (!state.focusedScopeItem) {
+      return;
+    }
+
     dispatch({
-      type: Asset3DActionType.SetCameraPosition,
-      payload: new Vector3(0, 0, 0.5), // use the scope item camera position
+      type: Asset3DActionType.SetCameraTransform,
+      payload: {
+        position: new Vector3(
+          state.focusedScopeItem.cameraEntity?.posX,
+          state.focusedScopeItem.cameraEntity?.posY,
+          state.focusedScopeItem.cameraEntity?.posZ
+        ),
+        rotation: new Quaternion().setFromEuler(
+          new Euler(
+            state.focusedScopeItem.cameraEntity?.rotX,
+            state.focusedScopeItem.cameraEntity?.rotY,
+            state.focusedScopeItem.cameraEntity?.rotZ,
+            "YXZ"
+          )
+        ),
+      },
     });
   }, [state.focusedScopeItem]);
 
@@ -100,15 +128,23 @@ export const Asset3DProvider = ({ children }: IAsset3DProvider) => {
         state,
         setScopeItems: (items: Scope[]) =>
           dispatch({ type: Asset3DActionType.SetScopeItems, payload: items }),
-        setCameraPosition: (position: Vector3) =>
+        setCameraTransform: (position: Vector3, rotation: Quaternion) =>
           dispatch({
-            type: Asset3DActionType.SetCameraPosition,
-            payload: position,
+            type: Asset3DActionType.SetCameraTransform,
+            payload: {
+              position,
+              rotation,
+            },
           }),
         setSelectedScope: (scope: Scope) =>
           dispatch({
             type: Asset3DActionType.SetSelectedScope,
             payload: scope,
+          }),
+        setFocusedScopeItem: (scopeItem: ScopeItem | null) =>
+          dispatch({
+            type: Asset3DActionType.FocusOnScopeItem,
+            payload: scopeItem,
           }),
       }}
     >

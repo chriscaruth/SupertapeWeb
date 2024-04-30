@@ -1,4 +1,5 @@
 import React from "react";
+import { Euler, Quaternion, Vector3 } from "three";
 
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -25,4 +26,19 @@ export function formatDate(dateString: string) {
       .replace("AM", "A.M.")
       .replace("PM", "P.M.")
   );
+}
+
+export function calculatePositionInFront(
+  position: Vector3,
+  rotation: Euler,
+  distance: number
+) {
+  const quaternion = new Quaternion().setFromEuler(
+    new Euler(rotation.x, rotation.y, rotation.z, "YXZ")
+  );
+
+  const direction = new Vector3(0, 0, -1);
+  direction.applyQuaternion(quaternion);
+
+  return position.clone().add(direction.multiplyScalar(distance));
 }

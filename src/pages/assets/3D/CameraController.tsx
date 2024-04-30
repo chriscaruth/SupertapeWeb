@@ -1,6 +1,8 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useAsset3D } from "../../../context/Asset3DContext";
+import { useDebouncedCallback } from "use-debounce";
 
 export const CameraController = () => {
   const { camera, gl } = useThree();
@@ -13,6 +15,23 @@ export const CameraController = () => {
   const lastY = useRef(0);
   const rotateSpeed = 0.005;
   const moveSpeed = 0.05;
+
+  const { state, setCameraTransform, setFocusedScopeItem } = useAsset3D();
+
+  const debouncedUpdate = useDebouncedCallback(
+    (position: THREE.Vector3, rotation: THREE.Quaternion) => {
+      setCameraTransform(position, rotation);
+      setFocusedScopeItem(null);
+    },
+    100
+  );
+
+  useEffect(() => {
+    if (state.cameraPosition && state.cameraRotation) {
+      camera.position.copy(state.cameraPosition);
+      camera.quaternion.copy(state.cameraRotation);
+    }
+  }, [state.cameraPosition, state.cameraRotation, camera]);
 
   useEffect(() => {
     camera.rotation.order = "YXZ";
@@ -98,17 +117,28 @@ export const CameraController = () => {
     camera.getWorldDirection(direction);
     right.crossVectors(direction, up).normalize();
 
+    let positionChanged = false;
+
     if (moveForward.current) {
       camera.position.addScaledVector(direction, moveSpeed);
+      positionChanged = true;
     }
     if (moveBackward.current) {
       camera.position.addScaledVector(direction, -moveSpeed);
+      positionChanged = true;
     }
     if (strafeLeft.current) {
       camera.position.addScaledVector(right, -moveSpeed);
+      positionChanged = true;
     }
     if (strafeRight.current) {
       camera.position.addScaledVector(right, moveSpeed);
+      positionChanged = true;
+    }
+
+    if (positionChanged) {
+      debouncedUpdate(camera.position, camera.quaternion);
+      console.log(camera.position, camera.rotation);
     }
   });
 
