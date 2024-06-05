@@ -2,9 +2,8 @@ import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
 import { Canvas, Object3DNode, extend } from "@react-three/fiber";
 import { Grid } from "@react-three/drei";
 import { CameraController } from "./CameraController";
-import { Panel } from "./Panel";
 import { useAsset3D } from "../../../context/Asset3DContext";
-import { Vector3, AxesHelper, Euler } from "three";
+import { Vector3, Euler } from "three";
 import { calculatePositionInFront } from "../../../utilities/utils";
 
 // Make LumaSplatsThree available to R3F
@@ -45,7 +44,7 @@ export const Viewer = ({ assetUrl }: ViewerProps) => {
       shadows
       camera={{ position: [0, 0, 0.5], rotation: [0, 0, 0], fov: 60 }}
     >
-      <primitive object={new AxesHelper(5)} />
+      {/* <primitive object={new AxesHelper(5)} /> */}
       <Grid
         position={[0, -1, 0]}
         args={[10.5, 10.5]}
@@ -75,18 +74,10 @@ export const Viewer = ({ assetUrl }: ViewerProps) => {
           );
 
           return (
-            <>
-              <Panel
-                key={scopeItem.id}
-                position={position}
-                rotation={rotation}
-                text={scopeItem.summary}
-              />
-              <mesh position={markerPosition}>
-                <sphereGeometry args={[0.01, 24, 24]} />
-                <meshBasicMaterial color={"blue"} />
-              </mesh>
-            </>
+            <mesh position={markerPosition}>
+              <sphereGeometry args={[0.01, 24, 24]} />
+              <meshBasicMaterial color={"blue"} />
+            </mesh>
           );
         })}
 

@@ -5,7 +5,7 @@ import { useAsset3D } from "../../../context/Asset3DContext";
 import { useDebouncedCallback } from "use-debounce";
 
 export const CameraController = () => {
-  const { camera, gl } = useThree();
+  const { camera, gl, scene } = useThree();
   const moveForward = useRef(false);
   const moveBackward = useRef(false);
   const strafeLeft = useRef(false);
@@ -94,8 +94,19 @@ export const CameraController = () => {
       }
     };
 
+    const handleDoubleClick = (event: MouseEvent) => {
+      const rect = gl.domElement.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      gl.render(scene, camera);
+
+      const image = gl.domElement.toDataURL();
+    };
+
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
+    gl.domElement.addEventListener("dblclick", handleDoubleClick);
     gl.domElement.addEventListener("mousedown", handleMouseDown);
     gl.domElement.addEventListener("mouseup", handleMouseUp);
     gl.domElement.addEventListener("mousemove", handleMouseMove);
@@ -106,6 +117,7 @@ export const CameraController = () => {
       gl.domElement.removeEventListener("mousedown", handleMouseDown);
       gl.domElement.removeEventListener("mouseup", handleMouseUp);
       gl.domElement.removeEventListener("mousemove", handleMouseMove);
+      gl.domElement.removeEventListener("dblclick", handleDoubleClick);
     };
   }, [gl.domElement, camera]);
 
@@ -138,7 +150,6 @@ export const CameraController = () => {
 
     if (positionChanged) {
       debouncedUpdate(camera.position, camera.quaternion);
-      console.log(camera.position, camera.rotation);
     }
   });
 
