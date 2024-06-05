@@ -8,7 +8,7 @@ interface ScopeProps {
 export const ScopeCard = ({ scope }: ScopeProps) => {
   return (
     <div>
-      <ScopeItemsList scopeItems={scope.scopeItems} />
+      <ScopeItemsList scope={scope} />
     </div>
   );
 };

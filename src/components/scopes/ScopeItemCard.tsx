@@ -11,12 +11,15 @@ export const ScopeItemCard = ({ scopeItem }: ScopeItemProps) => {
     <div
       key={scopeItem.id}
       onClick={() => setFocusedScopeItem(scopeItem)}
-      className="my-2 px-4 py-12 border border-gray-500 cursor-pointer"
+      className="mb-2 cursor-pointer"
     >
       <div className="flex flex-row gap-4">
         {scopeItem.cameraEntity && (
           <div>
-            <img src={scopeItem.cameraEntity?.imageUrl} />
+            <img
+              className="rounded-md"
+              src={scopeItem.cameraEntity?.imageUrl}
+            />
           </div>
         )}
       </div>

@@ -8,9 +8,11 @@ import {
 import { Scope } from "../models/Scope";
 import { Euler, Quaternion, Vector3 } from "three";
 import { ScopeItem } from "../models/ScopeItem";
+import { CategoryMap } from "../models/Category";
 
 enum Asset3DActionType {
   SetScopeItems = "SET_SCOPE_ITEMS",
+  SetScopeItemsCategoryMap = "SET_SCOPE_ITEM_CATEGORY_MAP",
   FocusOnScopeItem = "FOCUS_ON_SCOPE_ITEM",
   SetCameraTransform = "SET_CAMERA_TRANSFORM",
   SetSelectedScope = "SET_SELECTED_SCOPE",
@@ -18,6 +20,7 @@ enum Asset3DActionType {
 
 interface Asset3DState {
   scopes: Scope[];
+  scopeItemsCategoryMap: Map<string, CategoryMap[]>;
   selectedScope: Scope | null;
   focusedScopeItem: ScopeItem | null;
   cameraPosition: Vector3;
@@ -27,6 +30,11 @@ interface Asset3DState {
 interface SetScopeItemsAction {
   type: Asset3DActionType.SetScopeItems;
   payload: Scope[];
+}
+
+interface SetScopeItemsCategoryMapAction {
+  type: Asset3DActionType.SetScopeItemsCategoryMap;
+  payload: Map<string, CategoryMap[]>;
 }
 
 interface SetSelectedScopeAction {
@@ -51,11 +59,13 @@ type Asset3DAction =
   | SetScopeItemsAction
   | FocusOnScopeItemAction
   | SetCameraTransformAction
-  | SetSelectedScopeAction;
+  | SetSelectedScopeAction
+  | SetScopeItemsCategoryMapAction;
 
 interface IAsset3DContext {
   state: Asset3DState;
   setScopeItems: (items: Scope[]) => void;
+  setScopeItemsCategoryMap: (map: Map<string, CategoryMap[]>) => void;
   setCameraTransform: (position: Vector3, rotation: Quaternion) => void;
   setSelectedScope: (scope: Scope) => void;
   setFocusedScopeItem: (scopeItem: ScopeItem | null) => void;
@@ -73,6 +83,8 @@ const asset3DReducer = (state: Asset3DState, action: Asset3DAction) => {
   switch (action.type) {
     case Asset3DActionType.SetScopeItems:
       return { ...state, scopes: action.payload };
+    case Asset3DActionType.SetScopeItemsCategoryMap:
+      return { ...state, scopeItemsCategoryMap: action.payload };
     case Asset3DActionType.FocusOnScopeItem:
       return { ...state, focusedScopeItem: action.payload };
     case Asset3DActionType.SetCameraTransform:
@@ -91,6 +103,7 @@ const asset3DReducer = (state: Asset3DState, action: Asset3DAction) => {
 export const Asset3DProvider = ({ children }: IAsset3DProvider) => {
   const [state, dispatch] = useReducer(asset3DReducer, {
     scopes: [],
+    scopeItemsCategoryMap: new Map<string, CategoryMap[]>(),
     focusedScopeItem: null,
     selectedScope: null,
     cameraPosition: new Vector3(0, 0, 0),
@@ -126,8 +139,14 @@ export const Asset3DProvider = ({ children }: IAsset3DProvider) => {
     <Asset3DContext.Provider
       value={{
         state,
+        // Change scope type type here so we can get rid of setSCopeItemsCategoryMap
         setScopeItems: (items: Scope[]) =>
           dispatch({ type: Asset3DActionType.SetScopeItems, payload: items }),
+        setScopeItemsCategoryMap: (map: Map<string, CategoryMap[]>) =>
+          dispatch({
+            type: Asset3DActionType.SetScopeItemsCategoryMap,
+            payload: map,
+          }),
         setCameraTransform: (position: Vector3, rotation: Quaternion) =>
           dispatch({
             type: Asset3DActionType.SetCameraTransform,

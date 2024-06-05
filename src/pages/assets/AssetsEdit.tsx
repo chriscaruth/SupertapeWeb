@@ -7,6 +7,8 @@ import { Viewer } from "./3D/Viewer";
 import clsx from "clsx";
 import { useAsset3D } from "../../context/Asset3DContext";
 import { useEffect } from "react";
+import { transformScopeItems } from "../../utilities/utils";
+import { CategoryMap } from "../../models/Category";
 
 export const AssetsEdit = () => {
   const { assetId } = useParams();
@@ -16,13 +18,21 @@ export const AssetsEdit = () => {
   }
 
   const { assetService, scopeService } = useServices();
-  const { setScopeItems } = useAsset3D();
+  const { setScopeItems, setScopeItemsCategoryMap } = useAsset3D();
 
   const { data: asset } = assetService.getAssetByIdQuery(assetId);
   const { data: scopes } = scopeService.getScopesByAssetId(assetId);
 
+  // This is starting to become messy. We should reevaluate the payload from the API.
+  // It probably makes more sense to have the API return in the category mapping format.
   useEffect(() => {
-    console.log(scopes);
+    const map = new Map<string, CategoryMap[]>();
+    scopes?.forEach((scope) => {
+      const scopeItemsCategoryMap = transformScopeItems(scope.scopeItems); // This seems to be working for rendering
+      map.set(scope.id, scopeItemsCategoryMap);
+    });
+
+    setScopeItemsCategoryMap(map);
     setScopeItems(scopes ?? []);
   }, [scopes]);
 
@@ -41,13 +51,13 @@ export const AssetsEdit = () => {
           <div
             className={clsx(
               "p-4 overflow-auto",
-              asset?.assetMapURL ? "w-1/2" : "w-full"
+              asset?.assetMapURL ? "flex-none w-[400px]" : "w-full"
             )}
           >
             <ScopesList scopes={scopes} />
           </div>
           {asset?.assetMapURL && (
-            <div className="w-1/2">
+            <div className="flex-grow">
               <Viewer assetUrl={asset?.assetMapURL} />
             </div>
           )}

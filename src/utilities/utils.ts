@@ -1,5 +1,7 @@
 import React from "react";
 import { Euler, Quaternion, Vector3 } from "three";
+import { ScopeItem } from "../models/ScopeItem";
+import { Category, CategoryMap } from "../models/Category";
 
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -42,3 +44,62 @@ export function calculatePositionInFront(
 
   return position.clone().add(direction.multiplyScalar(distance));
 }
+
+export const transformScopeItems = (scopeItems: ScopeItem[]): CategoryMap[] => {
+  const categoryMap: { [key: string]: CategoryMap } = {};
+
+  const getCategoryPath = (category: Category | undefined | null): string[] => {
+    const path: string[] = [];
+    while (category) {
+      path.unshift(category.name);
+      category = category.parentCategory;
+    }
+    return path;
+  };
+
+  const addScopeItemToCategory = (
+    item: ScopeItem,
+    path: string[],
+    map: { [key: string]: CategoryMap }
+  ) => {
+    let currentMap = map;
+    path.forEach((categoryName, index) => {
+      if (!currentMap[categoryName]) {
+        currentMap[categoryName] = {
+          name: categoryName,
+          subcategories: [],
+          scopeItems: [],
+        };
+      }
+      if (index === path.length - 1) {
+        currentMap[categoryName].scopeItems.push(item);
+      } else {
+        if (
+          !currentMap[categoryName].subcategories.some(
+            (cat) => cat.name === path[index + 1]
+          )
+        ) {
+          currentMap[categoryName].subcategories.push({
+            name: path[index + 1],
+            subcategories: [],
+            scopeItems: [],
+          });
+        }
+        currentMap = currentMap[categoryName].subcategories.reduce(
+          (acc, subCat) => {
+            acc[subCat.name] = subCat;
+            return acc;
+          },
+          {} as { [key: string]: CategoryMap }
+        );
+      }
+    });
+  };
+
+  scopeItems.forEach((item) => {
+    const categoryPath = getCategoryPath(item.category);
+    addScopeItemToCategory(item, categoryPath, categoryMap);
+  });
+
+  return Object.values(categoryMap);
+};
