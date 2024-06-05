@@ -2,7 +2,12 @@ import { User } from "../User";
 import { RouteName } from "../../routing/router";
 import { SidebarLink } from "./SidebarLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBuilding,
+  faTableColumns,
+  faHandshake,
+  faBook,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const Sidebar = () => {
   return (
@@ -13,11 +18,19 @@ export const Sidebar = () => {
       <div className="space-y-2">
         <SidebarLink
           route={RouteName.Dashboard}
-          icon={<FontAwesomeIcon icon={faTableColumns} />}
+          icon={<FontAwesomeIcon className="w-4 h-4" icon={faTableColumns} />}
         />
         <SidebarLink
           route={RouteName.Assets}
-          icon={<FontAwesomeIcon icon={faBuilding} />}
+          icon={<FontAwesomeIcon className="w-4 h-4" icon={faBuilding} />}
+        />
+        <SidebarLink
+          route={RouteName.Vendors}
+          icon={<FontAwesomeIcon className="w-4 h-4" icon={faHandshake} />}
+        />
+        <SidebarLink
+          route={RouteName.Catalog}
+          icon={<FontAwesomeIcon className="w-4 h-4" icon={faBook} />}
         />
       </div>
       <div className="absolute bottom-0 left-0 p-6 w-full">
