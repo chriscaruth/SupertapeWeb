@@ -42,7 +42,7 @@ export const ScopeItemsList = ({ scope }: ScopeItemsListProps) => {
   };
 
   return (
-    <div className="border border-gray-100 rounded-md">
+    <div className="">
       {mappedScopeItems?.map((categoryMap, idx) =>
         renderScopeItemsByCategory(categoryMap, 0, `${idx + 1}`)
       )}
